@@ -1,0 +1,106 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Главная - EmailService{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h1 class="mb-4">📊 Панель управления</h1>
+    
+    <div class="row g-4">
+        <!-- Статистика -->
+        <div class="col-md-4">
+            <div class="card stats-card">
+                <div class="card-body text-center">
+                    <h5 class="card-title text-muted">Всего рассылок</h5>
+                    <h2 class="display-4">{{ total_mailings }}</h2>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card stats-card">
+                <div class="card-body text-center">
+                    <h5 class="card-title text-muted">Активных рассылок</h5>
+                    <h2 class="display-4 text-success">{{ active_mailings }}</h2>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card stats-card">
+                <div class="card-body text-center">
+                    <h5 class="card-title text-muted">Всего клиентов</h5>
+                    <h2 class="display-4 text-primary">{{ total_clients }}</h2>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Быстрые действия -->
+    <div class="row mt-4">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0"><i class="bi bi-lightning"></i> Быстрые действия</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row g-3">
+                        <div class="col-md-3">
+                            <a href="{% url 'clients:create' %}" class="btn btn-outline-primary w-100">
+                                <i class="bi bi-person-plus"></i> Добавить клиента
+                            </a>
+                        </div>
+                        <div class="col-md-3">
+                            <a href="{% url 'mail_message:create' %}" class="btn btn-outline-primary w-100">
+                                <i class="bi bi-envelope-plus"></i> Создать сообщение
+                            </a>
+                        </div>
+                        <div class="col-md-3">
+                            <a href="{% url 'newsletter:create' %}" class="btn btn-outline-primary w-100">
+                                <i class="bi bi-send-plus"></i> Создать рассылку
+                            </a>
+                        </div>
+                        <div class="col-md-3">
+                            <a href="{% url 'newsletter:list' %}" class="btn btn-outline-primary w-100">
+                                <i class="bi bi-list"></i> Все рассылки
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Последние рассылки -->
+    <div class="row mt-4">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0"><i class="bi bi-clock-history"></i> Последние рассылки</h5>
+                </div>
+                <div class="card-body">
+                    {% if latest_mailings %}
+                        <div class="list-group">
+                            {% for mailing in latest_mailings %}
+                                <a href="{% url 'newsletter:detail' mailing.pk %}" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <strong>{{ mailing.message.subject }}</strong>
+                                        <span class="badge 
+                                            {% if mailing.status == 'STARTED' %}bg-success
+                                            {% elif mailing.status == 'CREATED' %}bg-warning
+                                            {% else %}bg-secondary{% endif %} ms-2">
+                                            {{ mailing.get_status_display }}
+                                        </span>
+                                    </div>
+                                    <small class="text-muted">{{ mailing.created_at|date:"d.m.Y H:i" }}</small>
+                                </a>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        <p class="text-muted">Нет созданных рассылок.</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

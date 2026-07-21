@@ -1,0 +1,102 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Статистика - EmailService{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h1 class="mb-4">Статистика</h1>
+    
+    <div class="row g-4">
+        <div class="col-md-3">
+            <div class="card stats-card">
+                <div class="card-body text-center">
+                    <h5 class="text-muted">Рассылки</h5>
+                    <h2 class="display-4">{{ total_mailings }}</h2>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card stats-card">
+                <div class="card-body text-center">
+                    <h5 class="text-muted">Клиенты</h5>
+                    <h2 class="display-4 text-primary">{{ total_clients }}</h2>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card stats-card">
+                <div class="card-body text-center">
+                    <h5 class="text-muted">Сообщения</h5>
+                    <h2 class="display-4 text-info">{{ total_messages }}</h2>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card stats-card">
+                <div class="card-body text-center">
+                    <h5 class="text-muted">Успешность</h5>
+                    <h2 class="display-4 text-success">{{ success_rate }}%</h2>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row mt-4">
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0">Попытки рассылок</h5>
+                </div>
+                <div class="card-body">
+                    <div class="d-flex justify-content-around">
+                        <div class="text-center">
+                            <h3 class="text-success">{{ successful_attempts }}</h3>
+                            <small class="text-muted">Успешно</small>
+                        </div>
+                        <div class="text-center">
+                            <h3 class="text-danger">{{ failed_attempts }}</h3>
+                            <small class="text-muted">Не успешно</small>
+                        </div>
+                        <div class="text-center">
+                            <h3 class="text-primary">{{ total_attempts }}</h3>
+                            <small class="text-muted">Всего</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0">Статистика по рассылкам</h5>
+                </div>
+                <div class="card-body">
+                    {% for stat in mailing_stats %}
+                        <div class="mb-2">
+                            <div class="d-flex justify-content-between">
+                                <span>{{ stat.mailing.message.subject|truncatechars:30 }}</span>
+                                <span>
+                                    <span class="text-success">{{ stat.success }}</span>/
+                                    <span class="text-danger">{{ stat.failed }}</span>/
+                                    <span class="text-muted">{{ stat.total }}</span>
+                                </span>
+                            </div>
+                            <div class="progress" style="height: 8px;">
+                                {% if stat.total > 0 %}
+                                    <div class="progress-bar bg-success" style="width:
+                                    {{ stat.success|div:stat.total|mul:100 }}%"></div>
+                                    <div class="progress-bar bg-danger" style="width:
+                                    {{ stat.failed|div:stat.total|mul:100 }}%"></div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    {% empty %}
+                        <p class="text-muted">Нет данных о попытках.</p>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
