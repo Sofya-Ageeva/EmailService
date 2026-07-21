@@ -42,9 +42,9 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'clients',
-    # 'messages',
-    # 'mailings',
-    # 'users',
+    'mail_message',
+    'newsletter',
+    'users',
 ]
 
 MIDDLEWARE = [
@@ -131,14 +131,14 @@ MEDIA_ROOT = BASE_DIR / 'media'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # Email настройки
-# EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
-# DEFAULT_FROM_EMAIL = 'noreply@example.com'
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+DEFAULT_FROM_EMAIL = 'noreply@example.com'
 
 # Аутентификация
-# AUTH_USER_MODEL = 'users.User'
-# LOGIN_URL = 'users:login'
-# LOGIN_REDIRECT_URL = 'mailings:home'
-# LOGOUT_REDIRECT_URL = 'mailings:home'
+AUTH_USER_MODEL = 'users.User'
+LOGIN_URL = 'users:login'
+LOGIN_REDIRECT_URL = 'newsletter:home'
+LOGOUT_REDIRECT_URL = 'newsletter:home'
 
 # Кеширование
 CACHES = {

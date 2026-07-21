@@ -19,9 +19,8 @@ from django.urls import path, include
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', include('mailings.urls')),  # Главная страница
+    path('', include('newsletter.urls')),
     path('clients/', include('clients.urls')),
-    path('messages/', include('messages.urls')),
-    path('mailings/', include('mailings.urls')),
+    path('mail_message/', include('mail_message.urls')),
     path('users/', include('users.urls')),
 ]

@@ -1,0 +1,66 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Рассылки - EmailService{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1>📨 Рассылки</h1>
+        <a href="{% url 'newsletter:create' %}" class="btn btn-primary">
+            <i class="bi bi-send-plus"></i> Создать рассылку
+        </a>
+    </div>
+
+    <div class="table-responsive">
+        <table class="table table-striped table-hover">
+            <thead>
+                <tr>
+                    <th>Сообщение</th>
+                    <th>Начало</th>
+                    <th>Окончание</th>
+                    <th>Статус</th>
+                    <th>Получатели</th>
+                    <th>Действия</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for mailing in mailings %}
+                <tr>
+                    <td><a href="{% url 'newsletter:detail' mailing.pk %}">{{ mailing.message.subject }}</a></td>
+                    <td>{{ mailing.start_time|date:"d.m.Y H:i" }}</td>
+                    <td>{{ mailing.end_time|date:"d.m.Y H:i" }}</td>
+                    <td>
+                        <span class="badge 
+                            {% if mailing.status == 'STARTED' %}bg-success
+                            {% elif mailing.status == 'CREATED' %}bg-warning
+                            {% else %}bg-secondary{% endif %}">
+                            {{ mailing.get_status_display }}
+                        </span>
+                    </td>
+                    <td>{{ mailing.recipients.count }}</td>
+                    <td>
+                        <a href="{% url 'newsletter:detail' mailing.pk %}" class="btn btn-sm btn-info">
+                            <i class="bi bi-eye"></i>
+                        </a>
+                        <a href="{% url 'newsletter:update' mailing.pk %}" class="btn btn-sm btn-warning">
+                            <i class="bi bi-pencil"></i>
+                        </a>
+                        <a href="{% url 'newsletter:delete' mailing.pk %}" class="btn btn-sm btn-danger">
+                            <i class="bi bi-trash"></i>
+                        </a>
+                        <a href="{% url 'newsletter:send' mailing.pk %}" class="btn btn-sm btn-success">
+                            <i class="bi bi-send"></i>
+                        </a>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="6" class="text-center text-muted">Нет рассылок. <a href="{% url 'newsletter:create' %}">Создать первую</a></td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}
