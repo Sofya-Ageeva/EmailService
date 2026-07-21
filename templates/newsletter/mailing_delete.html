@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Удалить рассылку{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header bg-danger text-white">
+                    <h5 class="mb-0">🗑️ Удаление рассылки</h5>
+                </div>
+                <div class="card-body">
+                    <p>Вы уверены, что хотите удалить рассылку <strong>"{{ object.message.subject }}"</strong>?</p>
+                    <p class="text-muted">Это действие нельзя отменить. Все связанные попытки отправки также будут удалены.</p>
+                    <form method="post">
+                        {% csrf_token %}
+                        <div class="d-flex justify-content-between">
+                            <a href="{% url 'newsletter:list' %}" class="btn btn-secondary">Отмена</a>
+                            <button type="submit" class="btn btn-danger">Удалить</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

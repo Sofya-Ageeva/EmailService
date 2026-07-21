@@ -1,5 +1,5 @@
-from django.views.generic import ListView, CreateView, UpdateView, DeleteView
-from django.contrib.auth.mixins import LoginRequiredMixin
+from django.views.generic import ListView, CreateView, UpdateView, DeleteView, DetailView
+from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.urls import reverse_lazy
 from django.contrib import messages
 from .models import Client
@@ -24,7 +24,7 @@ class ClientCreateView(LoginRequiredMixin, CreateView):
         messages.success(self.request, 'Клиент успешно добавлен.')
         return super().form_valid(form)
 
-class ClientUpdateView(LoginRequiredMixin, UpdateView):
+class ClientUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
     model = Client
     form_class = ClientForm
     template_name = 'clients/client_form.html'
@@ -33,10 +33,21 @@ class ClientUpdateView(LoginRequiredMixin, UpdateView):
     def get_queryset(self):
         return Client.objects.filter(owner=self.request.user)
 
-class ClientDeleteView(LoginRequiredMixin, DeleteView):
+    def test_func(self):
+        client = self.get_object()
+        user = self.request.user
+        return user == client.owner or user.is_manager
+
+
+class ClientDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
     model = Client
     template_name = 'clients/client_confirm_delete.html'
     success_url = reverse_lazy('clients:list')
 
     def get_queryset(self):
         return Client.objects.filter(owner=self.request.user)
+
+    def test_func(self):
+        client = self.get_object()
+        user = self.request.user
+        return user == client.owner or user.is_manager
